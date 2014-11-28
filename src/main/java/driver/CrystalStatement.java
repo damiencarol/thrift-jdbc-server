@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
-import org.apache.thrift.TException;
-
 import driver.io.CCResultSet;
 import driver.io.CCSQLException;
 import driver.io.CCStatement;
@@ -16,16 +14,12 @@ import driver.io.statement_getWarnings_return;
 
 public class CrystalStatement implements Statement {
 
-    private Client client;
-    private CCStatement stat;
-    
     private CrystalConnection connection;
+    private CCStatement statement;
 
-
-    public CrystalStatement(Client client, CrystalConnection connection, CCStatement stat) {
-        this.client = client;
+    public CrystalStatement(CrystalConnection connection, CCStatement stat) {
         this.connection = connection;
-        this.stat = stat;
+        this.statement = stat;
     }
 
     public <T> T unwrap(Class<T> iface) throws SQLException {
@@ -38,13 +32,17 @@ public class CrystalStatement implements Statement {
     }
 
     public ResultSet executeQuery(String sql) throws SQLException {
+        Client client = null;
         try {
-            CCResultSet resultset = this.client.statement_executeQuery(stat, sql);
+            client = this.connection.lockClient();
+            CCResultSet resultset = client.statement_executeQuery(statement, sql);
             return new CrystalResultSet(resultset);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
@@ -53,12 +51,16 @@ public class CrystalStatement implements Statement {
     }
 
     public void close() throws SQLException {
+        Client client = null;
         try {
-            this.client.statement_close(this.stat);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.connection.lockClient();
+            client.statement_close(statement);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
@@ -71,22 +73,30 @@ public class CrystalStatement implements Statement {
     }
 
     public int getMaxRows() throws SQLException {
+        Client client = null;
         try {
-            return this.client.statement_getMaxRows(this.stat);
+            client = this.connection.lockClient();
+            return client.statement_getMaxRows(statement);
         } catch (CCSQLException e) {
             throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
         } catch (Exception e) {
-            throw new SQLException(e);
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
     public void setMaxRows(int max) throws SQLException {
+        Client client = null;
         try {
-            this.client.statement_setMaxRows(this.stat, max);
+            client = this.connection.lockClient();
+            client.statement_setMaxRows(statement, max);
         } catch (CCSQLException e) {
             throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
         } catch (Exception e) {
-            throw new SQLException(e);
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
@@ -103,27 +113,45 @@ public class CrystalStatement implements Statement {
     }
 
     public void cancel() throws SQLException {
+        Client client = null;
         try {
-            this.client.statement_cancel(this.stat);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.connection.lockClient();
+            client.statement_cancel(statement);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
     public SQLWarning getWarnings() throws SQLException {
+        Client client = null;
         try {
-            statement_getWarnings_return warn = this.client.statement_getWarnings(this.stat);
+            client = this.connection.lockClient();
+            statement_getWarnings_return warn = client.statement_getWarnings(statement);
             return CrystalWarning.buildFromList(warn.warnings);
-        } catch (TException e) {
-            throw new SQLException(e);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
     public void clearWarnings() throws SQLException {
+        Client client = null;
         try {
-            this.client.statement_clearWarnings(this.stat);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.connection.lockClient();
+            client.statement_clearWarnings(statement);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
@@ -132,30 +160,45 @@ public class CrystalStatement implements Statement {
     }
 
     public boolean execute(String sql) throws SQLException {
+        Client client = null;
         try {
-            return this.client.statement_execute(this.stat, sql);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.connection.lockClient();
+            return client.statement_execute(statement, sql);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
     public ResultSet getResultSet() throws SQLException {
+        Client client = null;
         try {
-            return new CrystalResultSet(this.client.statement_getResultSet(this.stat));
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.connection.lockClient();
+            CCResultSet resultset = client.statement_getResultSet(statement);
+            return new CrystalResultSet(resultset);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
     public int getUpdateCount() throws SQLException {
+        Client client = null;
         try {
-            return this.client.statement_getUpdateCount(this.stat);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.connection.lockClient();
+            return client.statement_getUpdateCount(statement);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 
@@ -184,10 +227,16 @@ public class CrystalStatement implements Statement {
     }
 
     public int getResultSetType() throws SQLException {
+        Client client = null;
         try {
-            return this.client.statement_getResultSetType(this.stat);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.connection.lockClient();
+            return client.statement_getResultSetType(statement);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
         }
     }
 

@@ -7,53 +7,25 @@ import java.sql.RowIdLifetime;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import driver.io.CCConnection;
 import driver.io.CCResultSet;
 import driver.io.CCSQLException;
-import driver.io.CCStaticMetaData;
 import driver.io.ConnectionService.Client;
 
 public class CrystalDatabaseMetaData implements DatabaseMetaData {
     
     final Logger logger = LoggerFactory.getLogger(CrystalDatabaseMetaData.class);
 
-    private CrystalConnection connection;
+    private CrystalConnection crystalConnection;
+    private CCConnection connection;
 
-    private Client client;
-    
-    private Client client_free;
-    private Client client_locked;
-    private ReentrantLock transportLock = new ReentrantLock(true);
-    
-    private CCStaticMetaData staticMeta;
-    
-    public Client lockClient() {
-        transportLock.lock();
-        client_locked = client_free;
-        return client_locked;
-    }
-    
-    public void releaseClient(Client client) {
-        client_free = client;
-        client_locked = null;
-        transportLock.unlock();
-    }
-
-    public CrystalDatabaseMetaData(Client client, CrystalConnection connection) {
-        this.client_free = client;
-        this.connection = connection;
-    }
-    
-    private CCStaticMetaData getStatic() throws TException {
-        if (staticMeta == null) {
-            this.staticMeta = client.connection_getstaticmetadata(connection.connection);
-        }
-        return this.staticMeta;
+    public CrystalDatabaseMetaData(CrystalConnection connection) {
+        this.crystalConnection = connection;
+        this.connection = connection.connection;
     }
 
     @Override
@@ -120,29 +92,47 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public String getCatalogSeparator() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getCatalogSeparator(connection.connection);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getCatalogSeparator(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public String getCatalogTerm() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getCatalogTerm(connection.connection);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getCatalogTerm(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public ResultSet getCatalogs() throws SQLException {
+        Client client = null;
         try {
-            CCResultSet rs = this.client.connection_getCatalogs(connection.connection);
-            return new CrystalResultSet(rs);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            CCResultSet resultset = client.connection_getCatalogs(connection);
+            return new CrystalResultSet(resultset);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -160,17 +150,23 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern,
             String columnNamePattern) throws SQLException {
+        Client client = null;
         try {
-            CCResultSet rs = this.client.connection_getColumns(connection.connection, catalog, schemaPattern, tableNamePattern, columnNamePattern);
-            return new CrystalResultSet(rs);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            CCResultSet resulset = client.connection_getColumns(connection, catalog, schemaPattern, tableNamePattern, columnNamePattern);
+            return new CrystalResultSet(resulset);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return this.connection;
+        return this.crystalConnection;
     }
 
     @Override
@@ -181,46 +177,76 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public int getDatabaseMajorVersion() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().databaseMajorVersion;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).getDatabaseMajorVersion();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public int getDatabaseMinorVersion() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().databaseMinorVersion;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).getDatabaseMinorVersion();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public String getDatabaseProductName() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().databaseProductName;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).getDatabaseProductName();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public String getDatabaseProductVersion() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().databaseProductVersion;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).getDatabaseProductVersion();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public int getDefaultTransactionIsolation() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().defaultTransactionIsolation;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).getDefaultTransactionIsolation();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -269,10 +295,16 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public String getIdentifierQuoteString() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().identifierQuoteString;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).getIdentifierQuoteString();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -291,13 +323,13 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
     @Override
     public int getJDBCMajorVersion() throws SQLException {
         // TODO Auto-generated method stub
-        return 3;
+        return 4;
     }
 
     @Override
     public int getJDBCMinorVersion() throws SQLException {
         // TODO Auto-generated method stub
-        return 0;
+        return 1;
     }
 
     @Override
@@ -467,10 +499,16 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public String getSQLKeywords() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getSQLKeywords(connection.connection);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getSQLKeywords(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -482,10 +520,16 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public String getSchemaTerm() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getSchemaTerm(connection.connection);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getSchemaTerm(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -496,11 +540,17 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException {
+        Client client = null;
         try {
-            CCResultSet rs = this.client.connection_getSchemas(connection.connection, catalog, schemaPattern);
-            return new CrystalResultSet(rs);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            CCResultSet resultset = client.connection_getSchemas(connection, catalog, schemaPattern);
+            return new CrystalResultSet(resultset);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
         
         /*
@@ -555,32 +605,46 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public ResultSet getTableTypes() throws SQLException {
+        Client client = null;
         try {
-            CCResultSet rs = this.client.connection_getTableTypes(connection.connection);
-            return new CrystalResultSet(rs);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            CCResultSet resultset = client.connection_getTableTypes(connection);
+            return new CrystalResultSet(resultset);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern,
-            String[] types) throws SQLException {
+            String[] types) throws SQLException 
+    {
+        Client client = null;
         try {
-            List<String> typesTab = null;
-            if (types!=null) {
-                typesTab = Arrays.asList(types);
-            }
-            CCResultSet rs;
-            rs = this.client.connection_getTables(connection.connection, catalog, schemaPattern, tableNamePattern, typesTab);
-            return new CrystalResultSet(rs);
+            client = this.crystalConnection.lockClient();
+            CCResultSet resultset = client.connection_getTables(connection, catalog, schemaPattern, tableNamePattern, tabToList(types));
+            return new CrystalResultSet(resultset);
         } catch (CCSQLException e) {
             throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
         } catch (Exception e) {
-            throw new SQLException(e);
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
-
+    
+    private static List<String> tabToList(String[] types) {
+        List<String> typesTab = null;
+            if (types!=null) {
+                typesTab = Arrays.asList(types);
+            }
+        return typesTab;
+    }
+    
     @Override
     public String getTimeDateFunctions() throws SQLException {
         throw new SQLException("Method not supported");
@@ -588,14 +652,17 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public ResultSet getTypeInfo() throws SQLException {
+        Client client = null;
         try {
-            CCResultSet rs;
-            rs = this.client.connection_getTypeInfo(connection.connection);
-            return new CrystalResultSet(rs);
+            client = this.crystalConnection.lockClient();
+            CCResultSet resultset = client.connection_getTypeInfo(connection);
+            return new CrystalResultSet(resultset);
         } catch (CCSQLException e) {
             throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
         } catch (Exception e) {
-            throw new SQLException(e);
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -633,10 +700,16 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public boolean isReadOnly() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getReadOnly(connection.connection);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getReadOnly(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -782,10 +855,16 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public boolean supportsCatalogsInTableDefinitions() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().supportsCatalogsInTableDefinitions;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).isSupportsCatalogsInTableDefinitions();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -979,19 +1058,31 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public boolean supportsSavepoints() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().supportsSavepoints;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).isSupportsSavepoints();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
     @Override
     public boolean supportsSchemasInDataManipulation() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().supportsSchemasInDataManipulation;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).isSupportsSchemasInDataManipulation();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 
@@ -1012,10 +1103,16 @@ public class CrystalDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public boolean supportsSchemasInTableDefinitions() throws SQLException {
+        Client client = null;
         try {
-            return getStatic().supportsSchemasInTableDefinitions;
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.crystalConnection.lockClient();
+            return client.connection_getstaticmetadata(connection).isSupportsSchemasInTableDefinitions();
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.crystalConnection.unlockClient(client);
         }
     }
 

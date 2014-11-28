@@ -19,31 +19,46 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.thrift.TException;
 import org.apache.thrift.transport.TSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import driver.io.CCConnection;
 import driver.io.CCSQLException;
 import driver.io.CCStatement;
 import driver.io.ConnectionService.Client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class CrystalConnection implements Connection {
 
     final Logger logger = LoggerFactory.getLogger(CrystalConnection.class);
 
     CCConnection connection;
-    private Client client;
+    //private Client client;
     private TSocket transport;
     private boolean isClosed;
+    
+    private Client client_free;
+    private Client client_locked;
+    private ReentrantLock transportLock = new ReentrantLock(true);
+        
+    public Client lockClient() {
+        transportLock.lock();
+        client_locked = client_free;
+        return client_locked;
+    }
+    
+    public void unlockClient(Client client) {
+        client_free = client;
+        client_locked = null;
+        transportLock.unlock();
+    }
 
     public CrystalConnection(TSocket transport, Client client,
             CCConnection conn, String url, Properties info) {
         this.transport = transport;
-        this.client = client;
+        this.client_free = client;
         connection = conn;
 
         this.isClosed = false;
@@ -75,22 +90,30 @@ public class CrystalConnection implements Connection {
     }
 
     public void setAutoCommit(boolean autoCommit) throws SQLException {
+        Client client = null;
         try {
-            this.client.connection_setAutoCommit(connection, autoCommit);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            client.connection_setAutoCommit(connection, autoCommit);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
     public boolean getAutoCommit() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getAutoCommit(connection);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            return client.connection_getAutoCommit(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
@@ -105,17 +128,7 @@ public class CrystalConnection implements Connection {
     public void close() throws SQLException {
         if (!this.isClosed)
             try {
-                this.client.closeConnection(connection);
-
-                this.connection = null;
-                this.client = null;
-
-            } catch (CCSQLException ex) {
-                throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode,
-                        ex);
-            } catch (TException e) {
-                throw new SQLException(
-                        "Error while cleaning up the server resources", e);
+                internalClose();
             } finally {
                 this.isClosed = true;
                 if (this.transport != null)
@@ -124,71 +137,109 @@ public class CrystalConnection implements Connection {
 
     }
 
+    private void internalClose() throws SQLException {
+        Client client = null;
+        try {
+            client = this.lockClient();
+            client.closeConnection(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
+        }
+    }
+
     public boolean isClosed() throws SQLException {
         return this.isClosed;
     }
 
     public DatabaseMetaData getMetaData() throws SQLException {
-        return new CrystalDatabaseMetaData(this.client, this);
+        return new CrystalDatabaseMetaData(this);
     }
 
     public void setReadOnly(boolean readOnly) throws SQLException {
+        Client client = null;
         try {
-            this.client.connection_setReadOnly(connection, readOnly);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            client.connection_setReadOnly(connection, readOnly);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
     public boolean isReadOnly() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getReadOnly(connection);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            return client.connection_getReadOnly(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
     public void setCatalog(String catalog) throws SQLException {
+        Client client = null;
         try {
-            this.client.connection_setCatalog(connection, catalog);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            client.connection_setCatalog(connection, catalog);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
     public String getCatalog() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getCatalog(connection);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            return client.connection_getCatalog(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
     public void setTransactionIsolation(int level) throws SQLException {
+        Client client = null;
         try {
-            this.client.connection_setTransactionIsolation(connection, level);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            client.connection_setTransactionIsolation(connection, level);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
     public int getTransactionIsolation() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getTransactionIsolation(connection);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            return client.connection_getTransactionIsolation(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
@@ -250,13 +301,17 @@ public class CrystalConnection implements Connection {
     public Statement createStatement(int resultSetType,
             int resultSetConcurrency, int resultSetHoldability)
             throws SQLException {
+        Client client = null;
         try {
-            CCStatement stat = this.client.createStatement(connection);
-            return new CrystalStatement(client, this, stat);
-        } catch (CCSQLException ex) {
-            throw new SQLException(ex.reason, ex.sqlState, ex.vendorCode, ex);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            CCStatement statement = client.createStatement(connection);
+            return new CrystalStatement(this, statement);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
@@ -305,9 +360,24 @@ public class CrystalConnection implements Connection {
 
     public boolean isValid(int timeout) throws SQLException {
         try {
-            return this.client.connection_isvalid(connection, timeout);
-        } catch (TException e) {
-            throw new SQLException(e);
+            return internalIsValid(timeout);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean internalIsValid(int timeout) throws SQLException {
+        Client client = null;
+        try {
+            client = this.lockClient();
+            return client.connection_isvalid(connection, timeout);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
@@ -340,18 +410,30 @@ public class CrystalConnection implements Connection {
     }
 
     public void setSchema(String schema) throws SQLException {
+        Client client = null;
         try {
-            this.client.connection_setSchema(connection, schema);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            client.connection_setSchema(connection, schema);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
     public String getSchema() throws SQLException {
+        Client client = null;
         try {
-            return this.client.connection_getSchema(connection);
-        } catch (TException e) {
-            throw new SQLException(e);
+            client = this.lockClient();
+            return client.connection_getSchema(connection);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.unlockClient(client);
         }
     }
 
