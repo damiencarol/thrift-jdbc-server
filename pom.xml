@@ -12,6 +12,13 @@
 	<description>Thrift protocol designed to suit JDBC API.
 The library includes thrift class, implementation of a server (JDBC gateway) and simple JDBC connector to use it.</description>
 
+	<developers>
+		<developer>
+			<name>Damien Carol</name>
+			<email>damien.carol@gmail.com</email>
+		</developer>
+	</developers>
+
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -34,7 +41,6 @@ The library includes thrift class, implementation of a server (JDBC gateway) and
 		</dependency>
 	</dependencies>
 	<build>
-
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -44,7 +50,6 @@ The library includes thrift class, implementation of a server (JDBC gateway) and
 					<configuration>
 						<source>1.7</source>
 						<target>1.7</target>
-
 					</configuration>
 				</plugin>
 				<plugin>
