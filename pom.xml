@@ -2,9 +2,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>btz-jdbc</groupId>
-	<artifactId>btz-jdbc</artifactId>
+	<groupId>com.github.damiencarol</groupId>
+	<artifactId>thrift-jdbc-server</artifactId>
 	<version>0.0.3</version>
+
+	<name>Thrift JDBC Server</name>
+	<url>https://github.com/damiencarol/thrift-jdbc-server</url>
+
+	<description>Thrift protocol designed to suit JDBC API.
+The library includes thrift class, implementation of a server (JDBC gateway) and simple JDBC connector to use it.</description>
 
 	<licenses>
 		<license>
