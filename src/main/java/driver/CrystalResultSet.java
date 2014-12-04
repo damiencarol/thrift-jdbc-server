@@ -519,7 +519,9 @@ public class CrystalResultSet implements ResultSet {
         case Types.LONGVARCHAR:
         case Types.LONGNVARCHAR:
                 return getString(columnIndex);
-         }
+        case Types.TIMESTAMP:
+            return getTimestamp(columnIndex);
+        }
         throw new SQLException("Convert from type " + type + " is not supported");
     }
 
@@ -655,13 +657,30 @@ public class CrystalResultSet implements ResultSet {
     }
 
     @Override
-    public Timestamp getTimestamp(int arg0) throws SQLException {
-        throw new SQLException("Method not supported");
+    public Timestamp getTimestamp(int columnIndex) throws SQLException {
+        try {
+            CCValue val = getCCValue(columnIndex);
+            if (val.isnull) {
+                this.wasNull = true;
+                return null;
+            } else if (val.getVal().isSetString_val()) {
+                this.wasNull = false;
+                return Timestamp.valueOf(val.getVal().getString_val());
+            }
+            throw new SQLException(
+                    "Cannot convert column " + columnIndex + " to Timestamp: " +
+            "STRING value not present in raw protocol");
+
+          } catch (Exception e) {
+            throw new SQLException(
+                "Cannot convert column " + columnIndex + " to Timestamp: " + e.toString(),
+                e);
+          }
     }
 
     @Override
-    public Timestamp getTimestamp(String arg0) throws SQLException {
-        throw new SQLException("Method not supported");
+    public Timestamp getTimestamp(String columnLabel) throws SQLException {
+        return getTimestamp(findColumn(columnLabel));
     }
 
     @Override
