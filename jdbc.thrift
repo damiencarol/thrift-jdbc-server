@@ -120,12 +120,12 @@ service ConnectionService {
    CCStaticMetaData connection_getstaticmetadata(1:CCConnection connection),
    bool connection_isvalid(1:CCConnection connection, 2:i32 timeout),
    
-   void connection_setAutoCommit(1:CCConnection connection, 2:bool autoCommit),
-   bool connection_getAutoCommit(1:CCConnection connection),
-   void connection_setTransactionIsolation(1:CCConnection connection, 2:i32 level),
-   i32 connection_getTransactionIsolation(1:CCConnection connection),
-   void connection_setReadOnly(1:CCConnection connection, 2:bool readOnly),
-   bool connection_getReadOnly(1:CCConnection connection),
+   void connection_setAutoCommit(1:CCConnection connection, 2:bool autoCommit) throws (1:CCSQLException ouch)
+   bool connection_getAutoCommit(1:CCConnection connection) throws (1:CCSQLException ouch)
+   void connection_setTransactionIsolation(1:CCConnection connection, 2:i32 level) throws (1:CCSQLException ouch)
+   i32 connection_getTransactionIsolation(1:CCConnection connection) throws (1:CCSQLException ouch)
+   void connection_setReadOnly(1:CCConnection connection, 2:bool readOnly) throws (1:CCSQLException ouch)
+   bool connection_getReadOnly(1:CCConnection connection) throws (1:CCSQLException ouch)
    
    void connection_setCatalog(1:CCConnection connection, 2:string catalog) throws (1:CCSQLException ouch)
    string connection_getCatalog(1:CCConnection connection) throws (1:CCSQLException ouch)

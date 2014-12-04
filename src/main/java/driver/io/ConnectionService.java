@@ -44,17 +44,17 @@ public class ConnectionService {
 
     public boolean connection_isvalid(CCConnection connection, int timeout) throws org.apache.thrift.TException;
 
-    public void connection_setAutoCommit(CCConnection connection, boolean autoCommit) throws org.apache.thrift.TException;
+    public void connection_setAutoCommit(CCConnection connection, boolean autoCommit) throws CCSQLException, org.apache.thrift.TException;
 
-    public boolean connection_getAutoCommit(CCConnection connection) throws org.apache.thrift.TException;
+    public boolean connection_getAutoCommit(CCConnection connection) throws CCSQLException, org.apache.thrift.TException;
 
-    public void connection_setTransactionIsolation(CCConnection connection, int level) throws org.apache.thrift.TException;
+    public void connection_setTransactionIsolation(CCConnection connection, int level) throws CCSQLException, org.apache.thrift.TException;
 
-    public int connection_getTransactionIsolation(CCConnection connection) throws org.apache.thrift.TException;
+    public int connection_getTransactionIsolation(CCConnection connection) throws CCSQLException, org.apache.thrift.TException;
 
-    public void connection_setReadOnly(CCConnection connection, boolean readOnly) throws org.apache.thrift.TException;
+    public void connection_setReadOnly(CCConnection connection, boolean readOnly) throws CCSQLException, org.apache.thrift.TException;
 
-    public boolean connection_getReadOnly(CCConnection connection) throws org.apache.thrift.TException;
+    public boolean connection_getReadOnly(CCConnection connection) throws CCSQLException, org.apache.thrift.TException;
 
     public void connection_setCatalog(CCConnection connection, String catalog) throws CCSQLException, org.apache.thrift.TException;
 
@@ -300,7 +300,7 @@ public class ConnectionService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "connection_isvalid failed: unknown result");
     }
 
-    public void connection_setAutoCommit(CCConnection connection, boolean autoCommit) throws org.apache.thrift.TException
+    public void connection_setAutoCommit(CCConnection connection, boolean autoCommit) throws CCSQLException, org.apache.thrift.TException
     {
       send_connection_setAutoCommit(connection, autoCommit);
       recv_connection_setAutoCommit();
@@ -314,14 +314,17 @@ public class ConnectionService {
       sendBase("connection_setAutoCommit", args);
     }
 
-    public void recv_connection_setAutoCommit() throws org.apache.thrift.TException
+    public void recv_connection_setAutoCommit() throws CCSQLException, org.apache.thrift.TException
     {
       connection_setAutoCommit_result result = new connection_setAutoCommit_result();
       receiveBase(result, "connection_setAutoCommit");
+      if (result.ouch != null) {
+        throw result.ouch;
+      }
       return;
     }
 
-    public boolean connection_getAutoCommit(CCConnection connection) throws org.apache.thrift.TException
+    public boolean connection_getAutoCommit(CCConnection connection) throws CCSQLException, org.apache.thrift.TException
     {
       send_connection_getAutoCommit(connection);
       return recv_connection_getAutoCommit();
@@ -334,17 +337,20 @@ public class ConnectionService {
       sendBase("connection_getAutoCommit", args);
     }
 
-    public boolean recv_connection_getAutoCommit() throws org.apache.thrift.TException
+    public boolean recv_connection_getAutoCommit() throws CCSQLException, org.apache.thrift.TException
     {
       connection_getAutoCommit_result result = new connection_getAutoCommit_result();
       receiveBase(result, "connection_getAutoCommit");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.ouch != null) {
+        throw result.ouch;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "connection_getAutoCommit failed: unknown result");
     }
 
-    public void connection_setTransactionIsolation(CCConnection connection, int level) throws org.apache.thrift.TException
+    public void connection_setTransactionIsolation(CCConnection connection, int level) throws CCSQLException, org.apache.thrift.TException
     {
       send_connection_setTransactionIsolation(connection, level);
       recv_connection_setTransactionIsolation();
@@ -358,14 +364,17 @@ public class ConnectionService {
       sendBase("connection_setTransactionIsolation", args);
     }
 
-    public void recv_connection_setTransactionIsolation() throws org.apache.thrift.TException
+    public void recv_connection_setTransactionIsolation() throws CCSQLException, org.apache.thrift.TException
     {
       connection_setTransactionIsolation_result result = new connection_setTransactionIsolation_result();
       receiveBase(result, "connection_setTransactionIsolation");
+      if (result.ouch != null) {
+        throw result.ouch;
+      }
       return;
     }
 
-    public int connection_getTransactionIsolation(CCConnection connection) throws org.apache.thrift.TException
+    public int connection_getTransactionIsolation(CCConnection connection) throws CCSQLException, org.apache.thrift.TException
     {
       send_connection_getTransactionIsolation(connection);
       return recv_connection_getTransactionIsolation();
@@ -378,17 +387,20 @@ public class ConnectionService {
       sendBase("connection_getTransactionIsolation", args);
     }
 
-    public int recv_connection_getTransactionIsolation() throws org.apache.thrift.TException
+    public int recv_connection_getTransactionIsolation() throws CCSQLException, org.apache.thrift.TException
     {
       connection_getTransactionIsolation_result result = new connection_getTransactionIsolation_result();
       receiveBase(result, "connection_getTransactionIsolation");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.ouch != null) {
+        throw result.ouch;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "connection_getTransactionIsolation failed: unknown result");
     }
 
-    public void connection_setReadOnly(CCConnection connection, boolean readOnly) throws org.apache.thrift.TException
+    public void connection_setReadOnly(CCConnection connection, boolean readOnly) throws CCSQLException, org.apache.thrift.TException
     {
       send_connection_setReadOnly(connection, readOnly);
       recv_connection_setReadOnly();
@@ -402,14 +414,17 @@ public class ConnectionService {
       sendBase("connection_setReadOnly", args);
     }
 
-    public void recv_connection_setReadOnly() throws org.apache.thrift.TException
+    public void recv_connection_setReadOnly() throws CCSQLException, org.apache.thrift.TException
     {
       connection_setReadOnly_result result = new connection_setReadOnly_result();
       receiveBase(result, "connection_setReadOnly");
+      if (result.ouch != null) {
+        throw result.ouch;
+      }
       return;
     }
 
-    public boolean connection_getReadOnly(CCConnection connection) throws org.apache.thrift.TException
+    public boolean connection_getReadOnly(CCConnection connection) throws CCSQLException, org.apache.thrift.TException
     {
       send_connection_getReadOnly(connection);
       return recv_connection_getReadOnly();
@@ -422,12 +437,15 @@ public class ConnectionService {
       sendBase("connection_getReadOnly", args);
     }
 
-    public boolean recv_connection_getReadOnly() throws org.apache.thrift.TException
+    public boolean recv_connection_getReadOnly() throws CCSQLException, org.apache.thrift.TException
     {
       connection_getReadOnly_result result = new connection_getReadOnly_result();
       receiveBase(result, "connection_getReadOnly");
       if (result.isSetSuccess()) {
         return result.success;
+      }
+      if (result.ouch != null) {
+        throw result.ouch;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "connection_getReadOnly failed: unknown result");
     }
@@ -1249,7 +1267,7 @@ public class ConnectionService {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws org.apache.thrift.TException {
+      public void getResult() throws CCSQLException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -1281,7 +1299,7 @@ public class ConnectionService {
         prot.writeMessageEnd();
       }
 
-      public boolean getResult() throws org.apache.thrift.TException {
+      public boolean getResult() throws CCSQLException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -1316,7 +1334,7 @@ public class ConnectionService {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws org.apache.thrift.TException {
+      public void getResult() throws CCSQLException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -1348,7 +1366,7 @@ public class ConnectionService {
         prot.writeMessageEnd();
       }
 
-      public int getResult() throws org.apache.thrift.TException {
+      public int getResult() throws CCSQLException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -1383,7 +1401,7 @@ public class ConnectionService {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws org.apache.thrift.TException {
+      public void getResult() throws CCSQLException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -1415,7 +1433,7 @@ public class ConnectionService {
         prot.writeMessageEnd();
       }
 
-      public boolean getResult() throws org.apache.thrift.TException {
+      public boolean getResult() throws CCSQLException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2450,7 +2468,11 @@ public class ConnectionService {
 
       public connection_setAutoCommit_result getResult(I iface, connection_setAutoCommit_args args) throws org.apache.thrift.TException {
         connection_setAutoCommit_result result = new connection_setAutoCommit_result();
-        iface.connection_setAutoCommit(args.connection, args.autoCommit);
+        try {
+          iface.connection_setAutoCommit(args.connection, args.autoCommit);
+        } catch (CCSQLException ouch) {
+          result.ouch = ouch;
+        }
         return result;
       }
     }
@@ -2470,8 +2492,12 @@ public class ConnectionService {
 
       public connection_getAutoCommit_result getResult(I iface, connection_getAutoCommit_args args) throws org.apache.thrift.TException {
         connection_getAutoCommit_result result = new connection_getAutoCommit_result();
-        result.success = iface.connection_getAutoCommit(args.connection);
-        result.setSuccessIsSet(true);
+        try {
+          result.success = iface.connection_getAutoCommit(args.connection);
+          result.setSuccessIsSet(true);
+        } catch (CCSQLException ouch) {
+          result.ouch = ouch;
+        }
         return result;
       }
     }
@@ -2491,7 +2517,11 @@ public class ConnectionService {
 
       public connection_setTransactionIsolation_result getResult(I iface, connection_setTransactionIsolation_args args) throws org.apache.thrift.TException {
         connection_setTransactionIsolation_result result = new connection_setTransactionIsolation_result();
-        iface.connection_setTransactionIsolation(args.connection, args.level);
+        try {
+          iface.connection_setTransactionIsolation(args.connection, args.level);
+        } catch (CCSQLException ouch) {
+          result.ouch = ouch;
+        }
         return result;
       }
     }
@@ -2511,8 +2541,12 @@ public class ConnectionService {
 
       public connection_getTransactionIsolation_result getResult(I iface, connection_getTransactionIsolation_args args) throws org.apache.thrift.TException {
         connection_getTransactionIsolation_result result = new connection_getTransactionIsolation_result();
-        result.success = iface.connection_getTransactionIsolation(args.connection);
-        result.setSuccessIsSet(true);
+        try {
+          result.success = iface.connection_getTransactionIsolation(args.connection);
+          result.setSuccessIsSet(true);
+        } catch (CCSQLException ouch) {
+          result.ouch = ouch;
+        }
         return result;
       }
     }
@@ -2532,7 +2566,11 @@ public class ConnectionService {
 
       public connection_setReadOnly_result getResult(I iface, connection_setReadOnly_args args) throws org.apache.thrift.TException {
         connection_setReadOnly_result result = new connection_setReadOnly_result();
-        iface.connection_setReadOnly(args.connection, args.readOnly);
+        try {
+          iface.connection_setReadOnly(args.connection, args.readOnly);
+        } catch (CCSQLException ouch) {
+          result.ouch = ouch;
+        }
         return result;
       }
     }
@@ -2552,8 +2590,12 @@ public class ConnectionService {
 
       public connection_getReadOnly_result getResult(I iface, connection_getReadOnly_args args) throws org.apache.thrift.TException {
         connection_getReadOnly_result result = new connection_getReadOnly_result();
-        result.success = iface.connection_getReadOnly(args.connection);
-        result.setSuccessIsSet(true);
+        try {
+          result.success = iface.connection_getReadOnly(args.connection);
+          result.setSuccessIsSet(true);
+        } catch (CCSQLException ouch) {
+          result.ouch = ouch;
+        }
         return result;
       }
     }
@@ -3429,6 +3471,12 @@ public class ConnectionService {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
             connection_setAutoCommit_result result = new connection_setAutoCommit_result();
+            if (e instanceof CCSQLException) {
+                        result.ouch = (CCSQLException) e;
+                        result.setOuchIsSet(true);
+                        msg = result;
+            }
+             else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -3481,6 +3529,12 @@ public class ConnectionService {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
             connection_getAutoCommit_result result = new connection_getAutoCommit_result();
+            if (e instanceof CCSQLException) {
+                        result.ouch = (CCSQLException) e;
+                        result.setOuchIsSet(true);
+                        msg = result;
+            }
+             else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -3531,6 +3585,12 @@ public class ConnectionService {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
             connection_setTransactionIsolation_result result = new connection_setTransactionIsolation_result();
+            if (e instanceof CCSQLException) {
+                        result.ouch = (CCSQLException) e;
+                        result.setOuchIsSet(true);
+                        msg = result;
+            }
+             else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -3583,6 +3643,12 @@ public class ConnectionService {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
             connection_getTransactionIsolation_result result = new connection_getTransactionIsolation_result();
+            if (e instanceof CCSQLException) {
+                        result.ouch = (CCSQLException) e;
+                        result.setOuchIsSet(true);
+                        msg = result;
+            }
+             else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -3633,6 +3699,12 @@ public class ConnectionService {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
             connection_setReadOnly_result result = new connection_setReadOnly_result();
+            if (e instanceof CCSQLException) {
+                        result.ouch = (CCSQLException) e;
+                        result.setOuchIsSet(true);
+                        msg = result;
+            }
+             else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -3685,6 +3757,12 @@ public class ConnectionService {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
             connection_getReadOnly_result result = new connection_getReadOnly_result();
+            if (e instanceof CCSQLException) {
+                        result.ouch = (CCSQLException) e;
+                        result.setOuchIsSet(true);
+                        msg = result;
+            }
+             else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -8702,6 +8780,7 @@ public class ConnectionService {
   public static class connection_setAutoCommit_result implements org.apache.thrift.TBase<connection_setAutoCommit_result, connection_setAutoCommit_result._Fields>, java.io.Serializable, Cloneable, Comparable<connection_setAutoCommit_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("connection_setAutoCommit_result");
 
+    private static final org.apache.thrift.protocol.TField OUCH_FIELD_DESC = new org.apache.thrift.protocol.TField("ouch", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -8709,10 +8788,11 @@ public class ConnectionService {
       schemes.put(TupleScheme.class, new connection_setAutoCommit_resultTupleSchemeFactory());
     }
 
+    public CCSQLException ouch; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      OUCH((short)1, "ouch");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -8727,6 +8807,8 @@ public class ConnectionService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 1: // OUCH
+            return OUCH;
           default:
             return null;
         }
@@ -8765,9 +8847,13 @@ public class ConnectionService {
         return _fieldName;
       }
     }
+
+    // isset id assignments
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.OUCH, new org.apache.thrift.meta_data.FieldMetaData("ouch", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(connection_setAutoCommit_result.class, metaDataMap);
     }
@@ -8775,10 +8861,20 @@ public class ConnectionService {
     public connection_setAutoCommit_result() {
     }
 
+    public connection_setAutoCommit_result(
+      CCSQLException ouch)
+    {
+      this();
+      this.ouch = ouch;
+    }
+
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public connection_setAutoCommit_result(connection_setAutoCommit_result other) {
+      if (other.isSetOuch()) {
+        this.ouch = new CCSQLException(other.ouch);
+      }
     }
 
     public connection_setAutoCommit_result deepCopy() {
@@ -8787,15 +8883,51 @@ public class ConnectionService {
 
     @Override
     public void clear() {
+      this.ouch = null;
+    }
+
+    public CCSQLException getOuch() {
+      return this.ouch;
+    }
+
+    public connection_setAutoCommit_result setOuch(CCSQLException ouch) {
+      this.ouch = ouch;
+      return this;
+    }
+
+    public void unsetOuch() {
+      this.ouch = null;
+    }
+
+    /** Returns true if field ouch is set (has been assigned a value) and false otherwise */
+    public boolean isSetOuch() {
+      return this.ouch != null;
+    }
+
+    public void setOuchIsSet(boolean value) {
+      if (!value) {
+        this.ouch = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case OUCH:
+        if (value == null) {
+          unsetOuch();
+        } else {
+          setOuch((CCSQLException)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case OUCH:
+        return getOuch();
+
       }
       throw new IllegalStateException();
     }
@@ -8807,6 +8939,8 @@ public class ConnectionService {
       }
 
       switch (field) {
+      case OUCH:
+        return isSetOuch();
       }
       throw new IllegalStateException();
     }
@@ -8824,6 +8958,15 @@ public class ConnectionService {
       if (that == null)
         return false;
 
+      boolean this_present_ouch = true && this.isSetOuch();
+      boolean that_present_ouch = true && that.isSetOuch();
+      if (this_present_ouch || that_present_ouch) {
+        if (!(this_present_ouch && that_present_ouch))
+          return false;
+        if (!this.ouch.equals(that.ouch))
+          return false;
+      }
+
       return true;
     }
 
@@ -8840,6 +8983,16 @@ public class ConnectionService {
 
       int lastComparison = 0;
 
+      lastComparison = Boolean.valueOf(isSetOuch()).compareTo(other.isSetOuch());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOuch()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ouch, other.ouch);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -8860,6 +9013,13 @@ public class ConnectionService {
       StringBuilder sb = new StringBuilder("connection_setAutoCommit_result(");
       boolean first = true;
 
+      sb.append("ouch:");
+      if (this.ouch == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ouch);
+      }
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -8903,6 +9063,15 @@ public class ConnectionService {
             break;
           }
           switch (schemeField.id) {
+            case 1: // OUCH
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.ouch = new CCSQLException();
+                struct.ouch.read(iprot);
+                struct.setOuchIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -8918,6 +9087,11 @@ public class ConnectionService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.ouch != null) {
+          oprot.writeFieldBegin(OUCH_FIELD_DESC);
+          struct.ouch.write(oprot);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -8935,11 +9109,25 @@ public class ConnectionService {
       @Override
       public void write(org.apache.thrift.protocol.TProtocol prot, connection_setAutoCommit_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetOuch()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetOuch()) {
+          struct.ouch.write(oprot);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, connection_setAutoCommit_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.ouch = new CCSQLException();
+          struct.ouch.read(iprot);
+          struct.setOuchIsSet(true);
+        }
       }
     }
 
@@ -9308,6 +9496,7 @@ public class ConnectionService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("connection_getAutoCommit_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)0);
+    private static final org.apache.thrift.protocol.TField OUCH_FIELD_DESC = new org.apache.thrift.protocol.TField("ouch", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -9316,10 +9505,12 @@ public class ConnectionService {
     }
 
     public boolean success; // required
+    public CCSQLException ouch; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      OUCH((short)1, "ouch");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -9336,6 +9527,8 @@ public class ConnectionService {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // OUCH
+            return OUCH;
           default:
             return null;
         }
@@ -9383,6 +9576,8 @@ public class ConnectionService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+      tmpMap.put(_Fields.OUCH, new org.apache.thrift.meta_data.FieldMetaData("ouch", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(connection_getAutoCommit_result.class, metaDataMap);
     }
@@ -9391,11 +9586,13 @@ public class ConnectionService {
     }
 
     public connection_getAutoCommit_result(
-      boolean success)
+      boolean success,
+      CCSQLException ouch)
     {
       this();
       this.success = success;
       setSuccessIsSet(true);
+      this.ouch = ouch;
     }
 
     /**
@@ -9404,6 +9601,9 @@ public class ConnectionService {
     public connection_getAutoCommit_result(connection_getAutoCommit_result other) {
       __isset_bitfield = other.__isset_bitfield;
       this.success = other.success;
+      if (other.isSetOuch()) {
+        this.ouch = new CCSQLException(other.ouch);
+      }
     }
 
     public connection_getAutoCommit_result deepCopy() {
@@ -9414,6 +9614,7 @@ public class ConnectionService {
     public void clear() {
       setSuccessIsSet(false);
       this.success = false;
+      this.ouch = null;
     }
 
     public boolean isSuccess() {
@@ -9439,6 +9640,30 @@ public class ConnectionService {
       __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
     }
 
+    public CCSQLException getOuch() {
+      return this.ouch;
+    }
+
+    public connection_getAutoCommit_result setOuch(CCSQLException ouch) {
+      this.ouch = ouch;
+      return this;
+    }
+
+    public void unsetOuch() {
+      this.ouch = null;
+    }
+
+    /** Returns true if field ouch is set (has been assigned a value) and false otherwise */
+    public boolean isSetOuch() {
+      return this.ouch != null;
+    }
+
+    public void setOuchIsSet(boolean value) {
+      if (!value) {
+        this.ouch = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
@@ -9449,6 +9674,14 @@ public class ConnectionService {
         }
         break;
 
+      case OUCH:
+        if (value == null) {
+          unsetOuch();
+        } else {
+          setOuch((CCSQLException)value);
+        }
+        break;
+
       }
     }
 
@@ -9456,6 +9689,9 @@ public class ConnectionService {
       switch (field) {
       case SUCCESS:
         return Boolean.valueOf(isSuccess());
+
+      case OUCH:
+        return getOuch();
 
       }
       throw new IllegalStateException();
@@ -9470,6 +9706,8 @@ public class ConnectionService {
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case OUCH:
+        return isSetOuch();
       }
       throw new IllegalStateException();
     }
@@ -9493,6 +9731,15 @@ public class ConnectionService {
         if (!(this_present_success && that_present_success))
           return false;
         if (this.success != that.success)
+          return false;
+      }
+
+      boolean this_present_ouch = true && this.isSetOuch();
+      boolean that_present_ouch = true && that.isSetOuch();
+      if (this_present_ouch || that_present_ouch) {
+        if (!(this_present_ouch && that_present_ouch))
+          return false;
+        if (!this.ouch.equals(that.ouch))
           return false;
       }
 
@@ -9522,6 +9769,16 @@ public class ConnectionService {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetOuch()).compareTo(other.isSetOuch());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOuch()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ouch, other.ouch);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -9544,6 +9801,14 @@ public class ConnectionService {
 
       sb.append("success:");
       sb.append(this.success);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("ouch:");
+      if (this.ouch == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ouch);
+      }
       first = false;
       sb.append(")");
       return sb.toString();
@@ -9598,6 +9863,15 @@ public class ConnectionService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // OUCH
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.ouch = new CCSQLException();
+                struct.ouch.read(iprot);
+                struct.setOuchIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -9616,6 +9890,11 @@ public class ConnectionService {
         if (struct.isSetSuccess()) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           oprot.writeBool(struct.success);
+          oprot.writeFieldEnd();
+        }
+        if (struct.ouch != null) {
+          oprot.writeFieldBegin(OUCH_FIELD_DESC);
+          struct.ouch.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -9639,19 +9918,30 @@ public class ConnectionService {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetOuch()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           oprot.writeBool(struct.success);
+        }
+        if (struct.isSetOuch()) {
+          struct.ouch.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, connection_getAutoCommit_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = iprot.readBool();
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.ouch = new CCSQLException();
+          struct.ouch.read(iprot);
+          struct.setOuchIsSet(true);
         }
       }
     }
@@ -10118,6 +10408,7 @@ public class ConnectionService {
   public static class connection_setTransactionIsolation_result implements org.apache.thrift.TBase<connection_setTransactionIsolation_result, connection_setTransactionIsolation_result._Fields>, java.io.Serializable, Cloneable, Comparable<connection_setTransactionIsolation_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("connection_setTransactionIsolation_result");
 
+    private static final org.apache.thrift.protocol.TField OUCH_FIELD_DESC = new org.apache.thrift.protocol.TField("ouch", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -10125,10 +10416,11 @@ public class ConnectionService {
       schemes.put(TupleScheme.class, new connection_setTransactionIsolation_resultTupleSchemeFactory());
     }
 
+    public CCSQLException ouch; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      OUCH((short)1, "ouch");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -10143,6 +10435,8 @@ public class ConnectionService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 1: // OUCH
+            return OUCH;
           default:
             return null;
         }
@@ -10181,9 +10475,13 @@ public class ConnectionService {
         return _fieldName;
       }
     }
+
+    // isset id assignments
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.OUCH, new org.apache.thrift.meta_data.FieldMetaData("ouch", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(connection_setTransactionIsolation_result.class, metaDataMap);
     }
@@ -10191,10 +10489,20 @@ public class ConnectionService {
     public connection_setTransactionIsolation_result() {
     }
 
+    public connection_setTransactionIsolation_result(
+      CCSQLException ouch)
+    {
+      this();
+      this.ouch = ouch;
+    }
+
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public connection_setTransactionIsolation_result(connection_setTransactionIsolation_result other) {
+      if (other.isSetOuch()) {
+        this.ouch = new CCSQLException(other.ouch);
+      }
     }
 
     public connection_setTransactionIsolation_result deepCopy() {
@@ -10203,15 +10511,51 @@ public class ConnectionService {
 
     @Override
     public void clear() {
+      this.ouch = null;
+    }
+
+    public CCSQLException getOuch() {
+      return this.ouch;
+    }
+
+    public connection_setTransactionIsolation_result setOuch(CCSQLException ouch) {
+      this.ouch = ouch;
+      return this;
+    }
+
+    public void unsetOuch() {
+      this.ouch = null;
+    }
+
+    /** Returns true if field ouch is set (has been assigned a value) and false otherwise */
+    public boolean isSetOuch() {
+      return this.ouch != null;
+    }
+
+    public void setOuchIsSet(boolean value) {
+      if (!value) {
+        this.ouch = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case OUCH:
+        if (value == null) {
+          unsetOuch();
+        } else {
+          setOuch((CCSQLException)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case OUCH:
+        return getOuch();
+
       }
       throw new IllegalStateException();
     }
@@ -10223,6 +10567,8 @@ public class ConnectionService {
       }
 
       switch (field) {
+      case OUCH:
+        return isSetOuch();
       }
       throw new IllegalStateException();
     }
@@ -10240,6 +10586,15 @@ public class ConnectionService {
       if (that == null)
         return false;
 
+      boolean this_present_ouch = true && this.isSetOuch();
+      boolean that_present_ouch = true && that.isSetOuch();
+      if (this_present_ouch || that_present_ouch) {
+        if (!(this_present_ouch && that_present_ouch))
+          return false;
+        if (!this.ouch.equals(that.ouch))
+          return false;
+      }
+
       return true;
     }
 
@@ -10256,6 +10611,16 @@ public class ConnectionService {
 
       int lastComparison = 0;
 
+      lastComparison = Boolean.valueOf(isSetOuch()).compareTo(other.isSetOuch());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOuch()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ouch, other.ouch);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -10276,6 +10641,13 @@ public class ConnectionService {
       StringBuilder sb = new StringBuilder("connection_setTransactionIsolation_result(");
       boolean first = true;
 
+      sb.append("ouch:");
+      if (this.ouch == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ouch);
+      }
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -10319,6 +10691,15 @@ public class ConnectionService {
             break;
           }
           switch (schemeField.id) {
+            case 1: // OUCH
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.ouch = new CCSQLException();
+                struct.ouch.read(iprot);
+                struct.setOuchIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -10334,6 +10715,11 @@ public class ConnectionService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.ouch != null) {
+          oprot.writeFieldBegin(OUCH_FIELD_DESC);
+          struct.ouch.write(oprot);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -10351,11 +10737,25 @@ public class ConnectionService {
       @Override
       public void write(org.apache.thrift.protocol.TProtocol prot, connection_setTransactionIsolation_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetOuch()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetOuch()) {
+          struct.ouch.write(oprot);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, connection_setTransactionIsolation_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.ouch = new CCSQLException();
+          struct.ouch.read(iprot);
+          struct.setOuchIsSet(true);
+        }
       }
     }
 
@@ -10724,6 +11124,7 @@ public class ConnectionService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("connection_getTransactionIsolation_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.I32, (short)0);
+    private static final org.apache.thrift.protocol.TField OUCH_FIELD_DESC = new org.apache.thrift.protocol.TField("ouch", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -10732,10 +11133,12 @@ public class ConnectionService {
     }
 
     public int success; // required
+    public CCSQLException ouch; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      OUCH((short)1, "ouch");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -10752,6 +11155,8 @@ public class ConnectionService {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // OUCH
+            return OUCH;
           default:
             return null;
         }
@@ -10799,6 +11204,8 @@ public class ConnectionService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.OUCH, new org.apache.thrift.meta_data.FieldMetaData("ouch", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(connection_getTransactionIsolation_result.class, metaDataMap);
     }
@@ -10807,11 +11214,13 @@ public class ConnectionService {
     }
 
     public connection_getTransactionIsolation_result(
-      int success)
+      int success,
+      CCSQLException ouch)
     {
       this();
       this.success = success;
       setSuccessIsSet(true);
+      this.ouch = ouch;
     }
 
     /**
@@ -10820,6 +11229,9 @@ public class ConnectionService {
     public connection_getTransactionIsolation_result(connection_getTransactionIsolation_result other) {
       __isset_bitfield = other.__isset_bitfield;
       this.success = other.success;
+      if (other.isSetOuch()) {
+        this.ouch = new CCSQLException(other.ouch);
+      }
     }
 
     public connection_getTransactionIsolation_result deepCopy() {
@@ -10830,6 +11242,7 @@ public class ConnectionService {
     public void clear() {
       setSuccessIsSet(false);
       this.success = 0;
+      this.ouch = null;
     }
 
     public int getSuccess() {
@@ -10855,6 +11268,30 @@ public class ConnectionService {
       __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
     }
 
+    public CCSQLException getOuch() {
+      return this.ouch;
+    }
+
+    public connection_getTransactionIsolation_result setOuch(CCSQLException ouch) {
+      this.ouch = ouch;
+      return this;
+    }
+
+    public void unsetOuch() {
+      this.ouch = null;
+    }
+
+    /** Returns true if field ouch is set (has been assigned a value) and false otherwise */
+    public boolean isSetOuch() {
+      return this.ouch != null;
+    }
+
+    public void setOuchIsSet(boolean value) {
+      if (!value) {
+        this.ouch = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
@@ -10865,6 +11302,14 @@ public class ConnectionService {
         }
         break;
 
+      case OUCH:
+        if (value == null) {
+          unsetOuch();
+        } else {
+          setOuch((CCSQLException)value);
+        }
+        break;
+
       }
     }
 
@@ -10872,6 +11317,9 @@ public class ConnectionService {
       switch (field) {
       case SUCCESS:
         return Integer.valueOf(getSuccess());
+
+      case OUCH:
+        return getOuch();
 
       }
       throw new IllegalStateException();
@@ -10886,6 +11334,8 @@ public class ConnectionService {
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case OUCH:
+        return isSetOuch();
       }
       throw new IllegalStateException();
     }
@@ -10909,6 +11359,15 @@ public class ConnectionService {
         if (!(this_present_success && that_present_success))
           return false;
         if (this.success != that.success)
+          return false;
+      }
+
+      boolean this_present_ouch = true && this.isSetOuch();
+      boolean that_present_ouch = true && that.isSetOuch();
+      if (this_present_ouch || that_present_ouch) {
+        if (!(this_present_ouch && that_present_ouch))
+          return false;
+        if (!this.ouch.equals(that.ouch))
           return false;
       }
 
@@ -10938,6 +11397,16 @@ public class ConnectionService {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetOuch()).compareTo(other.isSetOuch());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOuch()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ouch, other.ouch);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -10960,6 +11429,14 @@ public class ConnectionService {
 
       sb.append("success:");
       sb.append(this.success);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("ouch:");
+      if (this.ouch == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ouch);
+      }
       first = false;
       sb.append(")");
       return sb.toString();
@@ -11014,6 +11491,15 @@ public class ConnectionService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // OUCH
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.ouch = new CCSQLException();
+                struct.ouch.read(iprot);
+                struct.setOuchIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -11032,6 +11518,11 @@ public class ConnectionService {
         if (struct.isSetSuccess()) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           oprot.writeI32(struct.success);
+          oprot.writeFieldEnd();
+        }
+        if (struct.ouch != null) {
+          oprot.writeFieldBegin(OUCH_FIELD_DESC);
+          struct.ouch.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -11055,19 +11546,30 @@ public class ConnectionService {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetOuch()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           oprot.writeI32(struct.success);
+        }
+        if (struct.isSetOuch()) {
+          struct.ouch.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, connection_getTransactionIsolation_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = iprot.readI32();
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.ouch = new CCSQLException();
+          struct.ouch.read(iprot);
+          struct.setOuchIsSet(true);
         }
       }
     }
@@ -11534,6 +12036,7 @@ public class ConnectionService {
   public static class connection_setReadOnly_result implements org.apache.thrift.TBase<connection_setReadOnly_result, connection_setReadOnly_result._Fields>, java.io.Serializable, Cloneable, Comparable<connection_setReadOnly_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("connection_setReadOnly_result");
 
+    private static final org.apache.thrift.protocol.TField OUCH_FIELD_DESC = new org.apache.thrift.protocol.TField("ouch", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -11541,10 +12044,11 @@ public class ConnectionService {
       schemes.put(TupleScheme.class, new connection_setReadOnly_resultTupleSchemeFactory());
     }
 
+    public CCSQLException ouch; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      OUCH((short)1, "ouch");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -11559,6 +12063,8 @@ public class ConnectionService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 1: // OUCH
+            return OUCH;
           default:
             return null;
         }
@@ -11597,9 +12103,13 @@ public class ConnectionService {
         return _fieldName;
       }
     }
+
+    // isset id assignments
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.OUCH, new org.apache.thrift.meta_data.FieldMetaData("ouch", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(connection_setReadOnly_result.class, metaDataMap);
     }
@@ -11607,10 +12117,20 @@ public class ConnectionService {
     public connection_setReadOnly_result() {
     }
 
+    public connection_setReadOnly_result(
+      CCSQLException ouch)
+    {
+      this();
+      this.ouch = ouch;
+    }
+
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public connection_setReadOnly_result(connection_setReadOnly_result other) {
+      if (other.isSetOuch()) {
+        this.ouch = new CCSQLException(other.ouch);
+      }
     }
 
     public connection_setReadOnly_result deepCopy() {
@@ -11619,15 +12139,51 @@ public class ConnectionService {
 
     @Override
     public void clear() {
+      this.ouch = null;
+    }
+
+    public CCSQLException getOuch() {
+      return this.ouch;
+    }
+
+    public connection_setReadOnly_result setOuch(CCSQLException ouch) {
+      this.ouch = ouch;
+      return this;
+    }
+
+    public void unsetOuch() {
+      this.ouch = null;
+    }
+
+    /** Returns true if field ouch is set (has been assigned a value) and false otherwise */
+    public boolean isSetOuch() {
+      return this.ouch != null;
+    }
+
+    public void setOuchIsSet(boolean value) {
+      if (!value) {
+        this.ouch = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case OUCH:
+        if (value == null) {
+          unsetOuch();
+        } else {
+          setOuch((CCSQLException)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case OUCH:
+        return getOuch();
+
       }
       throw new IllegalStateException();
     }
@@ -11639,6 +12195,8 @@ public class ConnectionService {
       }
 
       switch (field) {
+      case OUCH:
+        return isSetOuch();
       }
       throw new IllegalStateException();
     }
@@ -11656,6 +12214,15 @@ public class ConnectionService {
       if (that == null)
         return false;
 
+      boolean this_present_ouch = true && this.isSetOuch();
+      boolean that_present_ouch = true && that.isSetOuch();
+      if (this_present_ouch || that_present_ouch) {
+        if (!(this_present_ouch && that_present_ouch))
+          return false;
+        if (!this.ouch.equals(that.ouch))
+          return false;
+      }
+
       return true;
     }
 
@@ -11672,6 +12239,16 @@ public class ConnectionService {
 
       int lastComparison = 0;
 
+      lastComparison = Boolean.valueOf(isSetOuch()).compareTo(other.isSetOuch());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOuch()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ouch, other.ouch);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -11692,6 +12269,13 @@ public class ConnectionService {
       StringBuilder sb = new StringBuilder("connection_setReadOnly_result(");
       boolean first = true;
 
+      sb.append("ouch:");
+      if (this.ouch == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ouch);
+      }
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -11735,6 +12319,15 @@ public class ConnectionService {
             break;
           }
           switch (schemeField.id) {
+            case 1: // OUCH
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.ouch = new CCSQLException();
+                struct.ouch.read(iprot);
+                struct.setOuchIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -11750,6 +12343,11 @@ public class ConnectionService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.ouch != null) {
+          oprot.writeFieldBegin(OUCH_FIELD_DESC);
+          struct.ouch.write(oprot);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -11767,11 +12365,25 @@ public class ConnectionService {
       @Override
       public void write(org.apache.thrift.protocol.TProtocol prot, connection_setReadOnly_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetOuch()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetOuch()) {
+          struct.ouch.write(oprot);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, connection_setReadOnly_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.ouch = new CCSQLException();
+          struct.ouch.read(iprot);
+          struct.setOuchIsSet(true);
+        }
       }
     }
 
@@ -12140,6 +12752,7 @@ public class ConnectionService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("connection_getReadOnly_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)0);
+    private static final org.apache.thrift.protocol.TField OUCH_FIELD_DESC = new org.apache.thrift.protocol.TField("ouch", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -12148,10 +12761,12 @@ public class ConnectionService {
     }
 
     public boolean success; // required
+    public CCSQLException ouch; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      OUCH((short)1, "ouch");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -12168,6 +12783,8 @@ public class ConnectionService {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // OUCH
+            return OUCH;
           default:
             return null;
         }
@@ -12215,6 +12832,8 @@ public class ConnectionService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+      tmpMap.put(_Fields.OUCH, new org.apache.thrift.meta_data.FieldMetaData("ouch", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(connection_getReadOnly_result.class, metaDataMap);
     }
@@ -12223,11 +12842,13 @@ public class ConnectionService {
     }
 
     public connection_getReadOnly_result(
-      boolean success)
+      boolean success,
+      CCSQLException ouch)
     {
       this();
       this.success = success;
       setSuccessIsSet(true);
+      this.ouch = ouch;
     }
 
     /**
@@ -12236,6 +12857,9 @@ public class ConnectionService {
     public connection_getReadOnly_result(connection_getReadOnly_result other) {
       __isset_bitfield = other.__isset_bitfield;
       this.success = other.success;
+      if (other.isSetOuch()) {
+        this.ouch = new CCSQLException(other.ouch);
+      }
     }
 
     public connection_getReadOnly_result deepCopy() {
@@ -12246,6 +12870,7 @@ public class ConnectionService {
     public void clear() {
       setSuccessIsSet(false);
       this.success = false;
+      this.ouch = null;
     }
 
     public boolean isSuccess() {
@@ -12271,6 +12896,30 @@ public class ConnectionService {
       __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
     }
 
+    public CCSQLException getOuch() {
+      return this.ouch;
+    }
+
+    public connection_getReadOnly_result setOuch(CCSQLException ouch) {
+      this.ouch = ouch;
+      return this;
+    }
+
+    public void unsetOuch() {
+      this.ouch = null;
+    }
+
+    /** Returns true if field ouch is set (has been assigned a value) and false otherwise */
+    public boolean isSetOuch() {
+      return this.ouch != null;
+    }
+
+    public void setOuchIsSet(boolean value) {
+      if (!value) {
+        this.ouch = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
@@ -12281,6 +12930,14 @@ public class ConnectionService {
         }
         break;
 
+      case OUCH:
+        if (value == null) {
+          unsetOuch();
+        } else {
+          setOuch((CCSQLException)value);
+        }
+        break;
+
       }
     }
 
@@ -12288,6 +12945,9 @@ public class ConnectionService {
       switch (field) {
       case SUCCESS:
         return Boolean.valueOf(isSuccess());
+
+      case OUCH:
+        return getOuch();
 
       }
       throw new IllegalStateException();
@@ -12302,6 +12962,8 @@ public class ConnectionService {
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case OUCH:
+        return isSetOuch();
       }
       throw new IllegalStateException();
     }
@@ -12325,6 +12987,15 @@ public class ConnectionService {
         if (!(this_present_success && that_present_success))
           return false;
         if (this.success != that.success)
+          return false;
+      }
+
+      boolean this_present_ouch = true && this.isSetOuch();
+      boolean that_present_ouch = true && that.isSetOuch();
+      if (this_present_ouch || that_present_ouch) {
+        if (!(this_present_ouch && that_present_ouch))
+          return false;
+        if (!this.ouch.equals(that.ouch))
           return false;
       }
 
@@ -12354,6 +13025,16 @@ public class ConnectionService {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetOuch()).compareTo(other.isSetOuch());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOuch()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ouch, other.ouch);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -12376,6 +13057,14 @@ public class ConnectionService {
 
       sb.append("success:");
       sb.append(this.success);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("ouch:");
+      if (this.ouch == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ouch);
+      }
       first = false;
       sb.append(")");
       return sb.toString();
@@ -12430,6 +13119,15 @@ public class ConnectionService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // OUCH
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.ouch = new CCSQLException();
+                struct.ouch.read(iprot);
+                struct.setOuchIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -12448,6 +13146,11 @@ public class ConnectionService {
         if (struct.isSetSuccess()) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           oprot.writeBool(struct.success);
+          oprot.writeFieldEnd();
+        }
+        if (struct.ouch != null) {
+          oprot.writeFieldBegin(OUCH_FIELD_DESC);
+          struct.ouch.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -12471,19 +13174,30 @@ public class ConnectionService {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetOuch()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           oprot.writeBool(struct.success);
+        }
+        if (struct.isSetOuch()) {
+          struct.ouch.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, connection_getReadOnly_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = iprot.readBool();
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.ouch = new CCSQLException();
+          struct.ouch.read(iprot);
+          struct.setOuchIsSet(true);
         }
       }
     }
