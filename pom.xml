@@ -4,7 +4,7 @@
 
 	<groupId>com.github.damiencarol</groupId>
 	<artifactId>thrift-jdbc-server</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4-SNAPSHOT</version>
 
 	<name>Thrift JDBC Server</name>
 	<url>https://github.com/damiencarol/thrift-jdbc-server</url>
