@@ -160,4 +160,6 @@ service ConnectionService {
    
    i32 statement_getMaxRows(1:CCStatement statement) throws (1:CCSQLException ouch)
    void statement_setMaxRows(1:CCStatement statement, 2:i32 max) throws (1:CCSQLException ouch)
+   i32 statement_getQueryTimeout(1:CCStatement statement) throws (1:CCSQLException ouch)
+   void statement_setQueryTimeout(1:CCStatement statement, 2:i32 seconds) throws (1:CCSQLException ouch)
 }

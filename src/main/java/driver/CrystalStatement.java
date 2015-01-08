@@ -105,11 +105,31 @@ public class CrystalStatement implements Statement {
     }
 
     public int getQueryTimeout() throws SQLException {
-        throw new SQLException("Method not supported: getQueryTimeout");
+        Client client = null;
+        try {
+            client = this.connection.lockClient();
+            return client.statement_getQueryTimeout(statement);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
+        }
     }
 
     public void setQueryTimeout(int seconds) throws SQLException {
-        throw new SQLException("Method not supported: setQueryTimeout");
+        Client client = null;
+        try {
+            client = this.connection.lockClient();
+            client.statement_setQueryTimeout(statement, seconds);
+        } catch (CCSQLException e) {
+            throw new SQLException(e.reason, e.sqlState, e.vendorCode, e);
+        } catch (Exception e) {
+            throw new SQLException(e.toString(), "08S01", e);
+        } finally {
+            this.connection.unlockClient(client);
+        }
     }
 
     public void cancel() throws SQLException {
